@@ -104,7 +104,7 @@ def check_sites(slug, folder):
     path = os.path.join(folder, "sites.csv")
     if not os.path.exists(path):
         return errs, warns
-    with open(path, newline="", encoding="utf-8") as f:
+    with open(path, newline="", encoding="utf-8-sig") as f:   # tolerate a byte-order mark from Excel
         try:
             rows = list(csv.reader(f, strict=True))
         except csv.Error as e:
@@ -118,6 +118,10 @@ def check_sites(slug, folder):
             continue
         d = dict(zip(SITES_HEADER, r))
         where = f"{slug}/sites.csv line {i}"
+        if not d["site_id"] or not d["site_name"]:
+            errs.append(f"{where}: site_id and site_name are required")
+        if "illustrative" in " ".join(r).lower() or "example co" in " ".join(r).lower():
+            errs.append(f"{where}: looks like an Example Co. row from the lab template")
         if d["company_slug"] != slug:
             errs.append(f"{where}: company_slug '{d['company_slug']}' != folder '{slug}'")
         if d["site_type"] not in {"own_operation", "supplier", "sourcing_region", "other"}:
@@ -139,6 +143,8 @@ def check_sites(slug, folder):
         if not d["source_page"] or not (d["source_doc"] or d["source_url"]):
             errs.append(f"{where}: needs source_doc or source_url, and source_page")
         seen[(d["reporting_entity"], d["site_name"])] += 1
+    ids = Counter(r[2] for r in rows[1:] if len(r) == len(SITES_HEADER))
+    errs += [f"{slug}/sites.csv: duplicate site_id {k}" for k, c in ids.items() if c > 1 and k]
     for k, c in seen.items():
         if c > 1:
             warns.append(f"{slug}/sites.csv: '{k[1]}' appears {c} times for {k[0]}")

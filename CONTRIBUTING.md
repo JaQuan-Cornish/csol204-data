@@ -1,11 +1,13 @@
 # Adding data (Labs 2 and 3)
 
-Every team adds at least one **cited series**: one measure for at least two periods (for example Scope 3 Category 11 for FY2021 and FY2022, emissions by region, or an earlier year's Scope 2), sourced to a page in a company document.
+**Lab 3:** every team adds its company's places to `sites.csv` (see "Lab 3: adding sites" at the end). You don't owe another emissions series.
+
+**Lab 2:** every team adds at least one **cited series**: one measure for at least two periods (for example Scope 3 Category 11 for FY2021 and FY2022, emissions by region, or an earlier year's Scope 2), sourced to a page in a company document.
 
 ## Steps
 
 1. **Find the number** in a company document (sustainability report, data book, CDP response, 10-K). Note the document title, URL and page.
-2. **Fork** this repo on GitHub (button at top right), or use the pull-request link your template repo's `queries.md` gives you.
+2. **Fork** this repo on GitHub (button at top right).
 3. **Edit** `companies/<slug>/emissions.csv` (or `segments.csv`, `financials.csv`). Add rows; don't change other teams' rows. If you find an error in an existing row, fix it and explain in the pull request.
 4. **Check** it: `python tools/validate.py <slug>`.
 5. **Open a pull request.** Fill in the template: what you added, the sources, and the checklist. A person on your team must have opened every source page.
