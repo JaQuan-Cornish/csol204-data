@@ -50,16 +50,17 @@ Splits of emissions or revenue: `company_slug, reporting_entity, period_label, s
 
 ## sites.csv (Lab 3, optional until a team adds it)
 
-Places where a company meets nature: its own sites, named suppliers and sourcing regions, as the company's own documents name them. One row per place.
+Places where a company meets nature: its own sites, named suppliers and sourcing regions. One row per place named in a source; each row cites the source that ties the place to the company.
 
-`company_slug, reporting_entity, site_id, site_name, site_type, activity, country, latitude, longitude, location_precision, coord_source, status, source_doc, source_url, source_page, source_quote, note`
+`company_slug, reporting_entity, site_id, site_name, site_type, activity, country, latitude, longitude, location_precision, coord_source, status, source_type, source_doc, source_url, source_page, source_quote, note`
 
 - `site_type`: `own_operation`, `supplier`, `sourcing_region` or `other`.
-- `status`: `located` (coordinates given) or `not_located` (the company names the place or activity but we couldn't place it; coordinates **blank**). A gap is data too.
+- `status`: `located` (coordinates given) or `not_located` (a source names this place, but we couldn't find usable coordinates; coordinates **blank**). A gap is data too. An activity with **no named place** ("we buy surfactants in Asia") is not a row: describe it in your lab write-up instead.
 - `latitude`, `longitude`: decimal degrees (WGS84). Never estimated without a stated `coord_source`.
 - `location_precision`: `exact` (address or the company's own coordinates), `approximate` (city or campus) or `region` (a sourcing region's centre; not a site).
 - `coord_source`: where the coordinates came from (e.g. "company mill list", "geocoded street address on p. 12", "GeoNames centroid for Riau").
-- `source_doc`/`source_url` and `source_page`: the company document that ties the place to the company; `source_quote`: the row label or ≤ 20 words.
+- `source_type`: `company` (the company's own report, filing or list), `regulator` (a permit, filing or registry), `ngo`, `media` or `other`.
+- `source_doc`/`source_url` and `source_page`: the document that ties the place to the company; `source_quote`: the row label or ≤ 20 words. A non-company source must say explicitly that the place belongs to or supplies the company, and `source_quote` shows where (required for non-company rows).
 - A place on this list is not evidence of an impact there. Screening values (water stress, protected areas, tree cover loss) stay in each team's lab repo, because tools update.
 
 ## Validation

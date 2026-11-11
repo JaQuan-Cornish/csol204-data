@@ -23,7 +23,7 @@ HEADERS = {
                      "source_page", "source_quote"],
 }
 SITES_HEADER = ["company_slug", "reporting_entity", "site_id", "site_name", "site_type", "activity", "country",
-                "latitude", "longitude", "location_precision", "coord_source", "status", "source_doc",
+                "latitude", "longitude", "location_precision", "coord_source", "status", "source_type", "source_doc",
                 "source_url", "source_page", "source_quote", "note"]
 STATUSES = {"reported", "not_relevant", "not_estimated", "not_disclosed"}
 CATS = {str(i) for i in range(1, 16)} | {"total", ""}
@@ -142,6 +142,10 @@ def check_sites(slug, folder):
             errs.append(f"{where}: status must be located or not_located")
         if not d["source_page"] or not (d["source_doc"] or d["source_url"]):
             errs.append(f"{where}: needs source_doc or source_url, and source_page")
+        if d["source_type"] not in {"company", "regulator", "ngo", "media", "other"}:
+            errs.append(f"{where}: source_type must be company, regulator, ngo, media or other")
+        elif d["source_type"] != "company" and not d["source_quote"]:
+            errs.append(f"{where}: a non-company source needs source_quote showing it ties the place to the company")
         seen[(d["reporting_entity"], d["site_name"])] += 1
     ids = Counter(r[2] for r in rows[1:] if len(r) == len(SITES_HEADER))
     errs += [f"{slug}/sites.csv: duplicate site_id {k}" for k, c in ids.items() if c > 1 and k]
