@@ -1,4 +1,4 @@
-# Adding data (Lab 2 requirement)
+# Adding data (Labs 2 and 3)
 
 Every team adds at least one **cited series**: one measure for at least two periods (for example Scope 3 Category 11 for FY2021 and FY2022, emissions by region, or an earlier year's Scope 2), sourced to a page in a company document.
 
@@ -23,3 +23,7 @@ microsoft,Microsoft Corporation,FY2021,2021-06-30,fiscal,3,11,,not_relevant,,,,n
 ## Using AI to help
 
 An AI agent can find candidate numbers and draft rows. A person must open the page and check every value before the pull request. Log each AI-supplied number in your lab repo's `audit/ai_audit.csv`.
+
+## Lab 3: adding sites
+
+Every Lab 3 team adds its company's **places** to `companies/<slug>/sites.csv` (create the file with the header in `SCHEMA.md` if it doesn't exist yet). Include `not_located` rows for activities you couldn't place: they show the next team where the gaps are. Your lab notebook writes your rows in this format to `outputs/sites_for_pr.csv`. Then follow steps 2–6 above: fork, add rows, `python tools/validate.py <slug>`, open a pull request. A person on your team must have opened every source page and checked the coordinates.

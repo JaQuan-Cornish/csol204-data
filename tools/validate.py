@@ -22,6 +22,9 @@ HEADERS = {
                      "metric_type", "value", "unit", "additive", "source_doc", "source_url",
                      "source_page", "source_quote"],
 }
+SITES_HEADER = ["company_slug", "reporting_entity", "site_id", "site_name", "site_type", "activity", "country",
+                "latitude", "longitude", "location_precision", "coord_source", "status", "source_doc",
+                "source_url", "source_page", "source_quote", "note"]
 STATUSES = {"reported", "not_relevant", "not_estimated", "not_disclosed"}
 CATS = {str(i) for i in range(1, 16)} | {"total", ""}
 
@@ -91,6 +94,54 @@ def check_company(slug):
             for k, c in keys.items():
                 if c > 1:
                     errs.append(f"{slug}/{fname}: duplicate row for entity/period/scope/category/method {k}")
+    e2, w2 = check_sites(slug, folder)
+    return errs + e2, warns + w2
+
+
+def check_sites(slug, folder):
+    """Optional Lab 3 file: places where the company meets nature."""
+    errs, warns = [], []
+    path = os.path.join(folder, "sites.csv")
+    if not os.path.exists(path):
+        return errs, warns
+    with open(path, newline="", encoding="utf-8") as f:
+        try:
+            rows = list(csv.reader(f, strict=True))
+        except csv.Error as e:
+            return [f"{slug}/sites.csv: CSV parse error: {e}"], warns
+    if not rows or rows[0] != SITES_HEADER:
+        return [f"{slug}/sites.csv: header doesn't match SCHEMA.md"], warns
+    seen = Counter()
+    for i, r in enumerate(rows[1:], start=2):
+        if len(r) != len(SITES_HEADER):
+            errs.append(f"{slug}/sites.csv line {i}: {len(r)} fields, expected {len(SITES_HEADER)}")
+            continue
+        d = dict(zip(SITES_HEADER, r))
+        where = f"{slug}/sites.csv line {i}"
+        if d["company_slug"] != slug:
+            errs.append(f"{where}: company_slug '{d['company_slug']}' != folder '{slug}'")
+        if d["site_type"] not in {"own_operation", "supplier", "sourcing_region", "other"}:
+            errs.append(f"{where}: site_type must be own_operation, supplier, sourcing_region or other")
+        if d["status"] == "located":
+            if not (num(d["latitude"]) and num(d["longitude"])):
+                errs.append(f"{where}: located rows need numeric latitude and longitude")
+            elif not (-90 <= float(d["latitude"]) <= 90 and -180 <= float(d["longitude"]) <= 180):
+                errs.append(f"{where}: coordinates out of range")
+            if d["location_precision"] not in {"exact", "approximate", "region"}:
+                errs.append(f"{where}: location_precision must be exact, approximate or region")
+            if not d["coord_source"]:
+                errs.append(f"{where}: coord_source missing")
+        elif d["status"] == "not_located":
+            if d["latitude"] or d["longitude"]:
+                errs.append(f"{where}: not_located rows keep latitude and longitude blank")
+        else:
+            errs.append(f"{where}: status must be located or not_located")
+        if not d["source_page"] or not (d["source_doc"] or d["source_url"]):
+            errs.append(f"{where}: needs source_doc or source_url, and source_page")
+        seen[(d["reporting_entity"], d["site_name"])] += 1
+    for k, c in seen.items():
+        if c > 1:
+            warns.append(f"{slug}/sites.csv: '{k[1]}' appears {c} times for {k[0]}")
     return errs, warns
 
 

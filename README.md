@@ -7,6 +7,7 @@ Shared, growing data set of company greenhouse-gas disclosures for CSOL 204 (Car
 | `companies/<slug>/emissions.csv` | Scope 1, Scope 2 (location and market, separate rows), Scope 3 by category and total |
 | `companies/<slug>/financials.csv` | Revenue for the same periods |
 | `companies/<slug>/segments.csv` | Splits by segment, region or business line (emissions where reported; otherwise revenue as context) |
+| `companies/<slug>/sites.csv` | Lab 3: places where the company meets nature (own sites, suppliers, sourcing regions), located or not, each tied to a company document. Added by teams. |
 | `companies/<slug>/NOTES.md` | Documents used, gaps, quirks, questions worth investigating |
 | [`SCHEMA.md`](SCHEMA.md) | Column definitions and the five rules |
 | [`AVAILABILITY.md`](AVAILABILITY.md) | What each company reports, by year |

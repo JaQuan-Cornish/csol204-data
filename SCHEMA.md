@@ -1,6 +1,6 @@
 # Data schema
 
-Every company has a folder `companies/<slug>/` with three CSV files and a `NOTES.md`. All files are UTF-8 CSV with a header row. Quote any field that contains a comma.
+Every company has a folder `companies/<slug>/` with three CSV files and a `NOTES.md`, plus `sites.csv` once a Lab 3 team adds it. All files are UTF-8 CSV with a header row. Quote any field that contains a comma.
 
 Slugs: `amazon`, `rivian`, `nvidia`, `john-deere`, `patagonia`, `nestle`, `ikea`, `pepsico`, `tesla`, `microsoft`, `spacex`, `sony`, `app`.
 
@@ -47,6 +47,20 @@ Splits of emissions or revenue: `company_slug, reporting_entity, period_label, s
 - For an emissions split, start `split_label` with the scope: `Scope 1: Asia`.
 - `additive`: `y` if the parts add up to the printed total.
 - A revenue split is context, **not an emissions allocation**. Label any chart that uses it that way.
+
+## sites.csv (Lab 3, optional until a team adds it)
+
+Places where a company meets nature: its own sites, named suppliers and sourcing regions, as the company's own documents name them. One row per place.
+
+`company_slug, reporting_entity, site_id, site_name, site_type, activity, country, latitude, longitude, location_precision, coord_source, status, source_doc, source_url, source_page, source_quote, note`
+
+- `site_type`: `own_operation`, `supplier`, `sourcing_region` or `other`.
+- `status`: `located` (coordinates given) or `not_located` (the company names the place or activity but we couldn't place it; coordinates **blank**). A gap is data too.
+- `latitude`, `longitude`: decimal degrees (WGS84). Never estimated without a stated `coord_source`.
+- `location_precision`: `exact` (address or the company's own coordinates), `approximate` (city or campus) or `region` (a sourcing region's centre; not a site).
+- `coord_source`: where the coordinates came from (e.g. "company mill list", "geocoded street address on p. 12", "GeoNames centroid for Riau").
+- `source_doc`/`source_url` and `source_page`: the company document that ties the place to the company; `source_quote`: the row label or ≤ 20 words.
+- A place on this list is not evidence of an impact there. Screening values (water stress, protected areas, tree cover loss) stay in each team's lab repo, because tools update.
 
 ## Validation
 
